@@ -1,0 +1,36 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.7'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile files('src/main/resources/PlffServer.jar')
+}
+
+javafx {
+    modules = ['javafx.controls', 'javafx.fxml']
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'nl.plff.tictactoe.Main'
+        attributes 'Class-Path': '.'
+    }
+    baseName = project.name + '-fat'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+mainClassName = 'nl.plff.tictactoe.Main'
+jar {
+    manifest {
+        attributes 'Main-Class': 'nl.plff.tictactoe.Main'
+    }
+    from {
+        configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
